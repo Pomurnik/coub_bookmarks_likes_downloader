@@ -13,8 +13,8 @@ This is a simple script that allows you to download your favorite coubs from the
     usage: python coub.py [-h] [-p PASSWORD] [-e EMAIL] [-t TYPE]
 
     mandatory arguments:
-        -p PASSWORD, --password PASSWORD
-        -e EMAIL, --email EMAIL
+        -p PASSWORD, --password PASSWORD Your password to your coub.com account
+        -e EMAIL, --email EMAIL Your email to your coub.com account
         -t TYPE, --type TYPE  Type [likes] to download coubs form My likes page and [bookmarks] for Bookmarks.
     
     optional arguments:

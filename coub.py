@@ -280,8 +280,8 @@ def scrape_coub_list(url, email, password):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-p", "--password", type=str)
-    parser.add_argument("-e", "--email", type=str)
+    parser.add_argument("-p", "--password", type=str, help='Your password to your coub.com account')
+    parser.add_argument("-e", "--email", type=str, help='Your email to your coub.com account')
     parser.add_argument("-t", "--type", type=str, help="Type [likes] to download coubs form My likes page and [bookmarks] for Bookmarks.")
 
     args = parser.parse_args()
