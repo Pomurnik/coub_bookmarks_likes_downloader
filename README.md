@@ -21,3 +21,7 @@ This is a simple script that allows you to download your favorite coubs from the
         -h, --help            show this help message and exit
     
     example: python coub.py -p mypassword -e myemail@gmail.com -t likes
+
+### Requirements
+
+* Python >= 3.8
