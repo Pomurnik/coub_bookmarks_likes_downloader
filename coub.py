@@ -52,7 +52,6 @@ def audioToText(mp3Path, driver):
     driver.get(GOOGLEIBMLINK)
     delayTime = 10
     time.sleep(2)
-    #root = driver.find_element(By.ID, 'root').find_elements(By.CLASS_NAME, 'dropzone _container _container_large')
     btn = driver.find_element(By.XPATH, '//*[@id="root"]/div/input')
     btn.send_keys(mp3Path)
     time.sleep(delayTime)
@@ -81,15 +80,15 @@ def download_coub(coub_url):
     title = slugify(title)
     if title is None or title == '':
         title = 'no_title'
-    path = os.path.join(os.getcwd(), f'video\{title}.mp4')
+    path = os.path.join(os.getcwd(), 'video', f'{title}.mp4')
     video_url = json_["file_versions"]["share"]['default']
     if video_url is None:
         video_url = json_["file_versions"]["html5"]['video']['med']['url']
         audio_url = json_["file_versions"]["html5"]['audio']['med']['url']
         video = requests.get(video_url, headers=headers)
         audio = requests.get(audio_url, headers=headers)
-        path_video = os.path.join(os.getcwd(), f'temp\{title}.mp4')
-        path_audio = os.path.join(os.getcwd(), f'temp\{title}.mp3') 
+        path_video = os.path.join(os.getcwd(), 'temp', f'{title}.mp4')
+        path_audio = os.path.join(os.getcwd(), 'temp', f'{title}.mp3') 
         with open (path_video, "wb") as f:
                 f.write(video.content)
         with open (path_audio, "wb") as f:
@@ -102,21 +101,20 @@ def download_coub(coub_url):
         tmp = requests.get(video_url, headers=headers)    
         with open (path, "wb") as f:
             f.write(tmp.content)
-    return title
 
-def pass_urls_to_dwonload(list):
+def pass_urls_to_download(list):
     errors = {}
     count = 0
     for c_url in list:
         print(f"Trying to download: {c_url}")
         try:
-            title = download_coub(c_url)
+            download_coub(c_url)
             count+=1
             print(f"{count} coubs downloaded.")            
         except Exception:
             errors[c_url] = str(traceback.format_exc())
             print('Not able to download coub.')
-    with open(os.path.join(os.getcwd(), 'json_lists/error_coubs_list.json'), 'w') as f:
+    with open(os.path.join(os.getcwd(), 'json_lists', 'error_coubs_list.json'), 'w') as f:
             json.dump(errors, f)
     return count, errors
 
@@ -274,7 +272,7 @@ def scrape_coub_list(url, email, password):
     coubs_list = list(set(title_list))
     print(f"Number of cubes: {len(coubs_list)}")
 
-    with open(os.path.join(os.getcwd(), 'json_lists/coubs_list.json'), 'w') as f:
+    with open(os.path.join(os.getcwd(), 'json_lists', 'coubs_list.json'), 'w') as f:
         json.dump(coubs_list, f)
 
     return coubs_list
@@ -308,12 +306,12 @@ if __name__ == "__main__":
 
     coub_list = scrape_coub_list(url, email, password)
 
-    counter_one, error_list = pass_urls_to_dwonload(coub_list)
+    counter_one, error_list = pass_urls_to_download(coub_list)
     print(f'{len(error_list)} coubs have not been downloaded.')
     
     if len(error_list) > 0 :
         print('Try again.')
-        counter_two, error_list = pass_urls_to_dwonload(error_list)
+        counter_two, error_list = pass_urls_to_download(error_list)
         print(f'{len(error_list)} coubs have not been downloaded. Check them and errors in /json_lists/error_coubs_list.json')
-    
+
     print(f'\nFinaly, {counter_two + counter_one} have been downloaded.')
