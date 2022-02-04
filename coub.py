@@ -44,6 +44,7 @@ URL_LIKES = 'https://coub.com/likes'
 GOOGLEIBMLINK = 'https://speech-to-text-demo.ng.bluemix.net/'
 DELAYTIME = 2
 AUDIOTOTEXTDEALY = 10
+script_path = os.path.dirname(sys.argv[0])
 
 def audioToText(mp3Path, driver):
     print('Start ReCaptcha audio to text.')
@@ -80,15 +81,15 @@ def download_coub(coub_url):
     title = slugify(title)
     if title is None or title == '':
         title = 'no_title'
-    path = os.path.join(os.getcwd(), 'video', f'{title}.mp4')
+    path = os.path.join(script_path, 'video', f'{title}.mp4')
     video_url = json_["file_versions"]["share"]['default']
     if video_url is None:
         video_url = json_["file_versions"]["html5"]['video']['med']['url']
         audio_url = json_["file_versions"]["html5"]['audio']['med']['url']
         video = requests.get(video_url, headers=headers)
         audio = requests.get(audio_url, headers=headers)
-        path_video = os.path.join(os.getcwd(), 'temp', f'{title}.mp4')
-        path_audio = os.path.join(os.getcwd(), 'temp', f'{title}.mp3') 
+        path_video = os.path.join(script_path, 'temp', f'{title}.mp4')
+        path_audio = os.path.join(script_path, 'temp', f'{title}.mp3') 
         with open (path_video, "wb") as f:
                 f.write(video.content)
         with open (path_audio, "wb") as f:
@@ -114,7 +115,7 @@ def pass_urls_to_download(list):
         except Exception:
             errors[c_url] = str(traceback.format_exc())
             print('Not able to download coub.')
-    with open(os.path.join(os.getcwd(), 'json_lists', 'error_coubs_list.json'), 'w') as f:
+    with open(os.path.join(script_path, 'json_lists', 'error_coubs_list.json'), 'w') as f:
             json.dump(errors, f)
     return count, errors
 
@@ -204,8 +205,8 @@ def scrape_coub_list(url, email, password):
             while True:
                 href = driver.find_element(By.ID,'audio-source').get_attribute('src')
                 response = requests.get(href, stream=True)
-                saveFile(response, os.path.join(os.getcwd(),'temp', FILENAME))
-                response = audioToText(os.path.join(os.getcwd(),'temp', FILENAME), driver)
+                saveFile(response, os.path.join(script_path,'temp', FILENAME))
+                response = audioToText(os.path.join(script_path,'temp', FILENAME), driver)
                 print(f"ReCaptcha auto text: {response}")            
                 driver.switch_to.default_content()
                 iframe = driver.find_elements(By.TAG_NAME, 'iframe')[audioBtnIndex]
@@ -218,11 +219,11 @@ def scrape_coub_list(url, email, password):
                     errorMsg = driver.find_elements(By.CLASS_NAME, 'rc-audiochallenge-error-message')[0]
                     if errorMsg.text == "" or errorMsg.value_of_css_property('display') == 'none':
                         print("Success")
-                        os.remove(os.path.join(os.getcwd(),'temp', FILENAME))
+                        os.remove(os.path.join(script_path,'temp', FILENAME))
                         break
                 except:
                     print("Success")
-                    os.remove(os.path.join(os.getcwd(),'temp', FILENAME))
+                    os.remove(os.path.join(script_path,'temp', FILENAME))
                     break
         except Exception as e:
                 print(e)
@@ -272,7 +273,7 @@ def scrape_coub_list(url, email, password):
     coubs_list = list(set(title_list))
     print(f"Number of cubes: {len(coubs_list)}")
 
-    with open(os.path.join(os.getcwd(), 'json_lists', 'coubs_list.json'), 'w') as f:
+    with open(os.path.join(script_path, 'json_lists', 'coubs_list.json'), 'w') as f:
         json.dump(coubs_list, f)
 
     return coubs_list
