@@ -1,6 +1,7 @@
 beautifulsoup4==4.10.0
 fake_useragent==0.1.11
 ffmpeg==1.4
+lxml==4.7.1
 requests==2.27.1
 selenium==4.1.0
 unicode_slugify==0.1.5

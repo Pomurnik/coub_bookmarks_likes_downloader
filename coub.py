@@ -37,6 +37,7 @@ import requests
 import subprocess
 import argparse
 import ffmpeg
+import lxml
 
 FILENAME = '1.mp3'
 URL_BOOKMARKS = 'https://coub.com/bookmarks'
